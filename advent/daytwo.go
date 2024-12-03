@@ -1,32 +1,15 @@
-package main
+package advent
 
 import (
 	_ "embed"
 	"fmt"
 	"slices"
-	"strconv"
 	"strings"
 )
 
 //go:embed daytwo.txt
-var input string
+var daytwoinput string
 var scratch [8]int = [8]int{0, 0, 0, 0, 0, 0, 0, 0}
-var debug [8]int = [8]int{0, 0, 0, 0, 0, 0, 0, 0}
-
-func Abs(num int) int {
-	if num < 0 {
-		return -num
-	}
-	return num
-}
-
-func getNum(ch string) int {
-	num, err := strconv.Atoi(ch)
-	if err != nil {
-		panic(err)
-	}
-	return num
-}
 
 func isSafe(lead int, follow int, ascending bool) (bool, int) {
 	var diff int
@@ -42,7 +25,7 @@ func isSafe(lead int, follow int, ascending bool) (bool, int) {
 }
 
 func GetReports() int {
-	inputrows := strings.Split(strings.Trim(input, "\n"), "\n")
+	inputrows := strings.Split(strings.Trim(daytwoinput, "\n"), "\n")
 	var safeReports int = 0
 	for _, v := range inputrows {
 		row := strings.Fields(v)
@@ -85,7 +68,7 @@ func checkSafety(row []string) (bool, int) {
 }
 
 func GetReportsDamped() int {
-	inputrows := strings.Split(strings.Trim(input, "\n"), "\n")
+	inputrows := strings.Split(strings.Trim(daytwoinput, "\n"), "\n")
 	var safeReports int = 0
 	for _, v := range inputrows {
 		row := strings.Fields(v)
@@ -112,7 +95,7 @@ func GetReportsDamped() int {
 	return safeReports
 }
 
-func main() {
-	fmt.Println(GetReports())
-	fmt.Println(GetReportsDamped())
+func RunDayTwo() {
+	fmt.Println("d2p1: ", GetReports())
+	fmt.Println("d2p2: ", GetReportsDamped())
 }

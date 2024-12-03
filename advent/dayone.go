@@ -1,37 +1,23 @@
-package main
+package advent
 
 import (
 	_ "embed"
 	"fmt"
 	"sort"
-	"strconv"
 	"strings"
 )
 
 //go:embed dayone.txt
-var input string
-
-func Abs(num int) int {
-	if num < 0 {
-		return -num
-	}
-	return num
-}
+var dayoneinput string
 
 func GetNums() ([]int, []int) {
-	test := strings.Split(strings.Trim(input, "\n"), "\n")
+	test := strings.Split(strings.Trim(dayoneinput, "\n"), "\n")
 	var a []int = make([]int, 1000)
 	var b []int = make([]int, 1000)
 	for _, v := range test {
 		temp := strings.Fields(v)
-		first, err := strconv.Atoi(temp[0])
-		if err != nil {
-			panic(err)
-		}
-		second, err := strconv.Atoi(temp[1])
-		if err != nil {
-			panic(err)
-		}
+		first := getNum(temp[0])
+		second := getNum(temp[1])
 		a = append(a, first)
 		b = append(b, second)
 	}
@@ -40,8 +26,8 @@ func GetNums() ([]int, []int) {
 
 func PartOne(a []int, b []int) int {
 
-	sort.Sort(sort.IntSlice(a))
-	sort.Sort(sort.IntSlice(b))
+	sort.Ints(a)
+	sort.Ints(b)
 
 	diffsum := 0
 
@@ -74,8 +60,8 @@ func PartTwo(a []int, b []int) int {
 	return simscore
 }
 
-func main() {
+func RunDayOne() {
 	a, b := GetNums()
-	fmt.Println(PartOne(a, b))
-	fmt.Println(PartTwo(a, b))
+	fmt.Println("d1p1: ", PartOne(a, b))
+	fmt.Println("d1p2: ", PartTwo(a, b))
 }
