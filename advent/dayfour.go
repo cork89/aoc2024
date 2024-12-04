@@ -210,7 +210,7 @@ func (c *counter) run(wg *sync.WaitGroup, lines []string, i int) {
 	_ = atomic.AddInt32(&c.total, int32(subCount))
 }
 
-func getXmasMultithreaded(lines []string) int32 {
+func getXmasConcurrent(lines []string) int32 {
 	cnt := counter{}
 	wg := sync.WaitGroup{}
 	wg.Add(len(lines))
@@ -226,7 +226,7 @@ func getXmasMultithreaded(lines []string) int32 {
 func RunDayFour() {
 	lines := strings.Split(dayfourinput, "\n")
 	xmas1 := getXmas(lines)
-	getXmasMultithreaded(lines)
+	getXmasConcurrent(lines)
 
 	fmt.Println("d4p1: ", xmas1)
 	fmt.Println("d4p2: ", getXmas2(lines))
