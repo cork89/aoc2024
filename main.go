@@ -6,4 +6,5 @@ func main() {
 	advent.RunDayOne()
 	advent.RunDayTwo()
 	advent.RunDayThree()
+	advent.RunDayFour()
 }
