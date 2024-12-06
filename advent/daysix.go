@@ -60,12 +60,24 @@ func inbounds(pos Position) bool {
 	return true
 }
 
-func calcpos(pos Position, patrol []string) Position {
-	// possibleloops = append(possibleloops, pos.coord)
+var firstbarrier = Position{xmax: 0}
+
+func isvisited(pos Position) bool {
+	if firstbarrier.xmax == 0 {
+		firstbarrier = pos.Copy()
+	} else if firstbarrier == pos {
+		return true
+	}
+	return false
+}
+
+func calcpos(pos Position, patrol []string) (Position, bool) {
+	var visited bool = false
 	if pos.dir == up {
 		if patrol[pos.coord.y-1][pos.coord.x] != guard[1] {
 			pos.coord.y = pos.coord.y - 1
 		} else {
+			visited = isvisited(pos)
 			pos.dir = right
 		}
 	} else if pos.dir == right {
@@ -87,7 +99,7 @@ func calcpos(pos Position, patrol []string) Position {
 			pos.dir = up
 		}
 	}
-	return pos
+	return pos, visited
 }
 
 func daysixsetup() (Position, []string, []Coord) {
@@ -100,6 +112,7 @@ func daysixsetup() (Position, []string, []Coord) {
 			coord := Coord{x: j, y: i}
 			if patrol[i][j] == guard[0] {
 				pos.coord = coord
+				guardpos = coord
 			}
 			uniquepositions[coord] = 0
 			if patrol[i][j] == guard[1] {
@@ -128,24 +141,27 @@ func printpatrol(patrol []string, pos Position, prevpos Position) {
 	}
 }
 
-func getUniquePositions(pos Position, patrol []string, depth int) (int, bool) {
+func getUniquePositions(pos Position, patrol []string, depth int, upos map[Coord]int) (int, bool) {
 
 	total := 1
 	var prevpos Position
 	var looped bool = false
 	for {
 		prevpos = pos
-		pos = calcpos(pos, patrol)
+		pos, looped = calcpos(pos, patrol)
 
+		if looped {
+			return total, true
+		}
 		inbounds := inbounds(pos)
 
-		if uniquepositions[pos.coord] == 0 {
-			uniquepositions[pos.coord] = 1
+		if upos[pos.coord] == 0 {
+			upos[pos.coord] = 1
 			total += 1
 		} else {
-			uniquepositions[pos.coord] += 1
+			upos[pos.coord] += 1
 
-			if uniquepositions[pos.coord] > depth {
+			if upos[pos.coord] > depth {
 				return total, true
 			}
 		}
@@ -176,24 +192,20 @@ func buildpatrol(patrol []string, coord Coord) []string {
 func getLoops(pos Position, patrol []string, barriers []Coord) int {
 	total := 0
 
-	var ycoords map[int][]Coord = make(map[int][]Coord, 0)
-	var xcoords map[int][]Coord = make(map[int][]Coord, 0)
+	var ycoords map[int]bool = make(map[int]bool)
+	var xcoords map[int]bool = make(map[int]bool, 0)
 
 	for _, coord := range barriers {
-		yslc, ok := ycoords[coord.y]
+		_, ok := ycoords[coord.y]
 
 		if !ok {
-			yslc = make([]Coord, 0)
-			yslc = append(yslc, coord)
-			ycoords[coord.y] = yslc
+			ycoords[coord.y] = true
 		}
 
-		xslc, ok := xcoords[coord.x]
+		_, ok = xcoords[coord.x]
 
 		if !ok {
-			xslc = make([]Coord, 0)
-			xslc = append(xslc, coord)
-			xcoords[coord.x] = xslc
+			xcoords[coord.x] = true
 		}
 	}
 
@@ -225,8 +237,9 @@ func getLoops(pos Position, patrol []string, barriers []Coord) int {
 		for k := range uniquepositions {
 			uniquepositions[k] = 0
 		}
+		firstbarrier = Position{xmax: 0}
 		modifiedpatrol := buildpatrol(patrol, coord)
-		_, looped := getUniquePositions(pos, modifiedpatrol, depth)
+		_, looped := getUniquePositions(pos, modifiedpatrol, depth, uniquepositions)
 		if looped {
 			total += 1
 		}
@@ -237,7 +250,7 @@ func getLoops(pos Position, patrol []string, barriers []Coord) int {
 
 func RunDaySix() {
 	pos, patrol, barriers := daysixsetup()
-	uniquepositions, _ := getUniquePositions(pos, patrol, 500)
-	fmt.Println("d6p1: ", uniquepositions)
+	ans, _ := getUniquePositions(pos, patrol, 500, uniquepositions)
+	fmt.Println("d6p1: ", ans)
 	fmt.Println("d6p2: ", getLoops(pos, patrol, barriers))
 }
