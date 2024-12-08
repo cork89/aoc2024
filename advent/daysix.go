@@ -112,7 +112,6 @@ func daysixsetup() (Position, []string, []Coord) {
 			coord := Coord{x: j, y: i}
 			if patrol[i][j] == guard[0] {
 				pos.coord = coord
-				guardpos = coord
 			}
 			uniquepositions[coord] = 0
 			if patrol[i][j] == guard[1] {
@@ -249,8 +248,8 @@ func getLoops(pos Position, patrol []string, barriers []Coord) int {
 }
 
 func RunDaySix() {
-	pos, patrol, barriers := daysixsetup()
+	pos, patrol, _ := daysixsetup()
 	ans, _ := getUniquePositions(pos, patrol, 500, uniquepositions)
 	fmt.Println("d6p1: ", ans)
-	fmt.Println("d6p2: ", getLoops(pos, patrol, barriers))
+	//fmt.Println("d6p2: ", getLoops(pos, patrol, barriers))
 }
