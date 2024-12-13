@@ -30,6 +30,58 @@ func (p Position) Copy() Position {
 	}
 }
 
+func (p Position) Up() Position {
+	pos := p.Copy()
+	pos.coord.y = p.coord.y - 1
+	pos.dir = up
+	return pos
+}
+
+func (p Position) Left() Position {
+	pos := p.Copy()
+	pos.coord.x = p.coord.x - 1
+	pos.dir = left
+	return pos
+}
+
+func (p Position) Right() Position {
+	pos := p.Copy()
+	pos.coord.x = p.coord.x + 1
+	pos.dir = right
+	return pos
+}
+
+func (p Position) Down() Position {
+	pos := p.Copy()
+	pos.coord.y = p.coord.y + 1
+	pos.dir = down
+	return pos
+}
+
+func (p Position) Inbounds() bool {
+	if p.dir == up {
+		if p.coord.y >= 0 {
+			return true
+		}
+		return false
+	} else if p.dir == left {
+		if p.coord.x >= 0 {
+			return true
+		}
+		return false
+	} else if p.dir == right {
+		if p.coord.x < p.xmax {
+			return true
+		}
+		return false
+	} else {
+		if p.coord.y < p.ymax {
+			return true
+		}
+		return false
+	}
+}
+
 type Direction string
 
 const (
