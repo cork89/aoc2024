@@ -105,7 +105,6 @@ func getTrailscores2(topomap [][]int, trailheads []Coord) int {
 	return total
 }
 
-// 238 too low
 func RunDayTen() {
 	topomap := setupdayten()
 	trailheads := getTrailheads(topomap)
